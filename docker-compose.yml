@@ -30,6 +30,18 @@ services:
     networks:
       - backend
 
+  gateway-db:
+    image: postgres:15
+    container_name: gateway-db
+    environment:
+      POSTGRES_DB: ${GATEWAY_DB_NAME}
+      POSTGRES_USER: ${GATEWAY_DB_USER}
+      POSTGRES_PASSWORD: ${GATEWAY_DB_PASSWORD}
+    volumes:
+      - gateway_data:/var/lib/postgresql/data
+    networks:
+      - backend
+
   # ===============================
   # BACKEND SERVICES
   # ===============================
@@ -85,15 +97,18 @@ services:
     build: ./api-gateway
     container_name: api-gateway
     depends_on:
+      - gateway-db
       - products-service
       - inventory-service
     environment:
-      SPRING_PROFILES_ACTIVE: docker
-
+      DB_HOST: ${GATEWAY_DB_HOST}
+      DB_PORT: ${GATEWAY_DB_PORT}
+      DB_NAME: ${GATEWAY_DB_NAME}
+      DB_USER: ${GATEWAY_DB_USER}
+      DB_PASSWORD: ${GATEWAY_DB_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
       PRODUCTS_SERVICE_URL: http://products-service:8081
       INVENTORY_SERVICE_URL: http://inventory-service:8082
-
-      JWT_SECRET: ${JWT_SECRET}
     ports:
       - "8080:8080"
     networks:
@@ -125,3 +140,4 @@ networks:
 volumes:
   products_data:
   inventory_data:
+  gateway_data:
