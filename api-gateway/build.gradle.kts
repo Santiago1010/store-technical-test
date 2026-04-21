@@ -4,7 +4,7 @@ plugins {
     java
 }
 
-group = "com.store.gateway"
+group = "com.store"
 version = "0.0.1-SNAPSHOT"
 
 java {
@@ -13,18 +13,20 @@ java {
     }
 }
 
-extra["springCloudVersion"] = "2023.0.1"
+repositories {
+    mavenCentral()
+}
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-webflux")
-    implementation("org.springframework.cloud:spring-cloud-starter-gateway")
-    implementation("org.springframework.boot:spring-boot-starter-actuator")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
-dependencyManagement {
-    imports {
-        mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
-    }
+tasks.withType<Test> {
+    useJUnitPlatform()
+}
+
+springBoot {
+    mainClass.set("com.store.gateway.GatewayApplication")
 }
