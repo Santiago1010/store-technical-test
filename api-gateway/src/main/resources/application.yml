@@ -1,0 +1,43 @@
+server:
+  port: ${GATEWAY_PORT:8080}
+
+spring:
+  application:
+    name: api-gateway
+
+  cloud:
+    gateway:
+      default-filters:
+        - AddResponseHeader=X-Gateway, api-gateway
+
+      routes:
+        - id: products-service
+          uri: ${PRODUCTS_SERVICE_URL}
+          predicates:
+            - Path=/api/v1/products/**
+          filters:
+            - StripPrefix=0
+
+        - id: inventory-purchases
+          uri: ${INVENTORY_SERVICE_URL}
+          predicates:
+            - Path=/api/v1/purchases/**
+          filters:
+            - StripPrefix=0
+
+        - id: inventory-query
+          uri: ${INVENTORY_SERVICE_URL}
+          predicates:
+            - Path=/api/v1/inventory/**
+          filters:
+            - StripPrefix=0
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+
+logging:
+  level:
+    org.springframework.cloud.gateway: INFO

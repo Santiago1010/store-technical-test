@@ -1,0 +1,18 @@
+{
+  "recommendations": [
+    "vscjava.vscode-java-pack",
+    "vscjava.vscode-gradle",
+    "vmware.vscode-spring-boot",
+    "vmware.vscode-spring-initializr",
+    "vmware.vscode-boot-dev-pack",
+    "ms-azuretools.vscode-docker",
+    "mtxr.sqltools",
+    "mtxr.sqltools-driver-pg",
+    "humao.rest-client",
+    "sonarsource.sonarlint-vscode",
+    "redhat.java",
+    "redhat.vscode-yaml",
+    "editorconfig.editorconfig",
+    "streetsidesoftware.code-spell-checker"
+  ]
+}

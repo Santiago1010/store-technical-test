@@ -1,0 +1,131 @@
+version: "3.9"
+
+services:
+
+  # ===============================
+  # DATABASES
+  # ===============================
+
+  products-db:
+    image: postgres:15
+    container_name: products-db
+    environment:
+      POSTGRES_DB: ${PRODUCTS_DB_NAME}
+      POSTGRES_USER: ${PRODUCTS_DB_USER}
+      POSTGRES_PASSWORD: ${PRODUCTS_DB_PASSWORD}
+    ports:
+      - "5433:5432"
+    volumes:
+      - products_data:/var/lib/postgresql/data
+    networks:
+      - backend
+
+  inventory-db:
+    image: postgres:15
+    container_name: inventory-db
+    environment:
+      POSTGRES_DB: ${INVENTORY_DB_NAME}
+      POSTGRES_USER: ${INVENTORY_DB_USER}
+      POSTGRES_PASSWORD: ${INVENTORY_DB_PASSWORD}
+    ports:
+      - "5434:5432"
+    volumes:
+      - inventory_data:/var/lib/postgresql/data
+    networks:
+      - backend
+
+  # ===============================
+  # BACKEND SERVICES
+  # ===============================
+
+  products-service:
+    build: ./products-service
+    container_name: products-service
+    depends_on:
+      - products-db
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+
+      DB_HOST: ${PRODUCTS_DB_HOST}
+      DB_PORT: ${PRODUCTS_DB_PORT}
+      DB_NAME: ${PRODUCTS_DB_NAME}
+      DB_USER: ${PRODUCTS_DB_USER}
+      DB_PASSWORD: ${PRODUCTS_DB_PASSWORD}
+
+      JWT_SECRET: ${JWT_SECRET}
+      API_KEY_SECRET: ${API_KEY_SECRET}
+    ports:
+      - "8081:8081"
+    networks:
+      - backend
+
+  inventory-service:
+    build: ./inventory-service
+    container_name: inventory-service
+    depends_on:
+      - inventory-db
+      - products-service
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+
+      DB_HOST: ${INVENTORY_DB_HOST}
+      DB_PORT: ${INVENTORY_DB_PORT}
+      DB_NAME: ${INVENTORY_DB_NAME}
+      DB_USER: ${INVENTORY_DB_USER}
+      DB_PASSWORD: ${INVENTORY_DB_PASSWORD}
+
+      PRODUCTS_SERVICE_URL: http://products-service:8081
+      API_KEY_SECRET: ${API_KEY_SECRET}
+    ports:
+      - "8082:8082"
+    networks:
+      - backend
+
+  # ===============================
+  # API GATEWAY
+  # ===============================
+
+  api-gateway:
+    build: ./api-gateway
+    container_name: api-gateway
+    depends_on:
+      - products-service
+      - inventory-service
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+
+      PRODUCTS_SERVICE_URL: http://products-service:8081
+      INVENTORY_SERVICE_URL: http://inventory-service:8082
+
+      JWT_SECRET: ${JWT_SECRET}
+    ports:
+      - "8080:8080"
+    networks:
+      - backend
+
+  # ===============================
+  # FRONTEND
+  # ===============================
+
+  store-frontend:
+    build: ./store-frontend
+    container_name: store-frontend
+    depends_on:
+      - api-gateway
+    environment:
+      VITE_API_BASE_URL: ${VITE_API_BASE_URL}
+    ports:
+      - "9000:9000"
+    networks:
+      - backend
+
+# ===============================
+# NETWORKS & VOLUMES
+# ===============================
+
+networks:
+  backend:
+
+volumes:
+  products_data:
+  inventory_data:
