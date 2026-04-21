@@ -101,6 +101,7 @@ services:
       - products-service
       - inventory-service
     environment:
+      SPRING_PROFILES_ACTIVE: docker
       DB_HOST: ${GATEWAY_DB_HOST}
       DB_PORT: ${GATEWAY_DB_PORT}
       DB_NAME: ${GATEWAY_DB_NAME}

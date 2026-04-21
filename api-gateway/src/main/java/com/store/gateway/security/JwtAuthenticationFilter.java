@@ -31,7 +31,11 @@ public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
         new String[]{"POST",   "/api/v1/auth/register"},
         new String[]{"POST",   "/api/v1/auth/login"},
         new String[]{"GET",    "/api/v1/products/**"},
-        new String[]{"GET",    "/actuator/**"}
+        new String[]{"GET",    "/actuator/**"},
+        new String[]{"GET", "/swagger-ui.html"},
+        new String[]{"GET", "/swagger-ui/**"},
+        new String[]{"GET", "/v3/api-docs/**"},
+        new String[]{"GET", "/webjars/**"}
     );
 
     private final JwtUtil jwtUtil;
