@@ -1,4 +1,4 @@
-import api from "src/boot/axios";
+import api from "@/boot/axios";
 import { v4 as uuidv4 } from "uuid";
 
 export async function request(config) {

@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { inventoryApi, purchasesApi } from "src/api/client";
+import { inventoryApi, purchasesApi } from "@/api/client";
 
 export const useInventoryStore = defineStore("inventory", {
   state: () => ({

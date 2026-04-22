@@ -1,6 +1,6 @@
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
-import { useAuthStore } from "src/stores/auth.store";
+import { useAuthStore } from "@/stores/auth.store";
 import { useRouter } from "vue-router";
 
 const api = axios.create({

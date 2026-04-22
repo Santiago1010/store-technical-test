@@ -31,8 +31,8 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
-import { productsApi, inventoryApi, purchasesApi } from "src/api/client";
-import AppError from "src/components/common/AppError.vue";
+import { productsApi, inventoryApi, purchasesApi } from "@/api/client";
+import AppError from "@/components/common/AppError.vue";
 
 const route = useRoute();
 

@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { productsApi } from "src/api/client";
+import { productsApi } from "@/api/client";
 
 const CACHE_TTL = 60 * 1000;
 

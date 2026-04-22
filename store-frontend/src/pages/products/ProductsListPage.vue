@@ -56,9 +56,9 @@
 <script setup>
 import { ref, reactive, onMounted, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { useProductsStore } from "src/stores/products.store";
-import ProductCard from "src/components/products/ProductCard.vue";
-import AppError from "src/components/common/AppError.vue";
+import { useProductsStore } from "@/stores/products.store";
+import ProductCard from "@/components/products/ProductCard.vue";
+import AppError from "@/components/common/AppError.vue";
 
 const store = useProductsStore();
 const route = useRoute();
