@@ -30,7 +30,7 @@ management:
 
 api:
   key:
-    secret: ${API_KEY_SECRET:local-dev-key}
+    secret: ${API_KEY_SECRET}
 
 logging:
   level:

@@ -4,10 +4,10 @@ import com.store.inventory.exception.ProductNotFoundException;
 import com.store.inventory.exception.ProductsServiceUnavailableException;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
-import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -21,6 +21,8 @@ import java.util.concurrent.CompletableFuture;
 @RequiredArgsConstructor
 public class ProductsClient {
 
+    @Value("${api.key.secret}")
+    private String apiKeySecret;
     private final WebClient productsWebClient;
 
     @CircuitBreaker(name = "productsService", fallbackMethod = "circuitBreakerFallback")
@@ -31,6 +33,7 @@ public class ProductsClient {
             productsWebClient.get()
                 .uri("/api/v1/products/{id}", productId)
                 .header("X-Correlation-Id", correlationId != null ? correlationId : "")
+                .header("X-API-Key", apiKeySecret)
                 .retrieve()
                 .onStatus(HttpStatusCode::is4xxClientError, response -> {
                     if (response.statusCode().value() == 404) {

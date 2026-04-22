@@ -28,6 +28,7 @@ spring:
             - Path=/api/v1/products/**
           filters:
             - StripPrefix=0
+            - AddRequestHeader=X-API-Key, ${API_KEY_SECRET}
 
         - id: inventory-purchases
           uri: ${INVENTORY_SERVICE_URL}
@@ -35,6 +36,7 @@ spring:
             - Path=/api/v1/purchases/**
           filters:
             - StripPrefix=0
+            - AddRequestHeader=X-API-Key, ${API_KEY_SECRET}
 
         - id: inventory-query
           uri: ${INVENTORY_SERVICE_URL}
@@ -42,6 +44,7 @@ spring:
             - Path=/api/v1/inventory/**
           filters:
             - StripPrefix=0
+            - AddRequestHeader=X-API-Key, ${API_KEY_SECRET}
 
       globalcors:
         corsConfigurations:
@@ -73,6 +76,10 @@ management:
     web:
       exposure:
         include: health,info,metrics
+
+api:
+  key:
+    secret: ${API_KEY_SECRET}
 
 logging:
   level:

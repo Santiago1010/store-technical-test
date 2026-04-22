@@ -82,7 +82,7 @@ services:
       DB_USER: ${INVENTORY_DB_USER}
       DB_PASSWORD: ${INVENTORY_DB_PASSWORD}
 
-      PRODUCTS_SERVICE_URL: http://products-service:8081
+      PRODUCTS_SERVICE_URL: http://products-service:8080
       API_KEY_SECRET: ${API_KEY_SECRET}
     ports:
       - "8082:8080"
@@ -108,8 +108,11 @@ services:
       DB_USER: ${GATEWAY_DB_USER}
       DB_PASSWORD: ${GATEWAY_DB_PASSWORD}
       JWT_SECRET: ${JWT_SECRET}
-      PRODUCTS_SERVICE_URL: http://products-service:8081
-      INVENTORY_SERVICE_URL: http://inventory-service:8082
+
+      API_KEY_SECRET: ${API_KEY_SECRET}
+
+      PRODUCTS_SERVICE_URL: http://products-service:8080
+      INVENTORY_SERVICE_URL: http://inventory-service:8080
     ports:
       - "8080:8080"
     networks:

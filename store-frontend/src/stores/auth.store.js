@@ -3,8 +3,8 @@ import { authApi } from "@/api/client";
 
 export const useAuthStore = defineStore("auth", {
   state: () => ({
-    token: localStorage.getItem("token"),
-    user: JSON.parse(localStorage.getItem("user") || "null"),
+    token: localStorage.getItem("token") || null,
+    user: null,
     loading: false,
     error: null,
   }),
@@ -19,18 +19,42 @@ export const useAuthStore = defineStore("auth", {
       this.error = null;
 
       try {
-        const res = await authApi.login(payload);
+        const data = await authApi.login(payload);
 
-        this.token = res.access_token;
+        this.token = data.access_token;
         this.user = {
-          username: res.username,
-          role: res.role,
+          username: data.username,
+          role: data.role,
         };
 
         localStorage.setItem("token", this.token);
-        localStorage.setItem("user", JSON.stringify(this.user));
       } catch (err) {
-        this.error = err.detail;
+        this.error = err?.response?.data?.errors?.[0]?.detail || "Login failed";
+
+        throw err;
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    async register(payload) {
+      this.loading = true;
+      this.error = null;
+
+      try {
+        const data = await authApi.register(payload);
+
+        this.token = data.access_token;
+        this.user = {
+          username: data.username,
+          role: data.role,
+        };
+
+        localStorage.setItem("token", this.token);
+      } catch (err) {
+        this.error =
+          err?.response?.data?.errors?.[0]?.detail || "Register failed";
+
         throw err;
       } finally {
         this.loading = false;
@@ -40,9 +64,7 @@ export const useAuthStore = defineStore("auth", {
     logout() {
       this.token = null;
       this.user = null;
-
       localStorage.removeItem("token");
-      localStorage.removeItem("user");
     },
   },
 });

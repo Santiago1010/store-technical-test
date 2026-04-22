@@ -60,6 +60,10 @@ management:
     health:
       show-details: always
 
+api:
+  key:
+    secret: ${API_KEY_SECRET}
+
 logging:
   level:
     root: INFO
