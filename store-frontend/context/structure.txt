@@ -1,0 +1,62 @@
+.
+├── context
+│   └── structure.txt
+├── Dockerfile
+├── .env
+├── .env.example
+├── .gitignore
+├── index.html
+├── package.json
+├── pnpm-lock.yaml
+├── public
+│   ├── favicon.svg
+│   └── icons.svg
+├── README.md
+├── src
+│   ├── api
+│   │   ├── client.js
+│   │   ├── inventory.api.js
+│   │   └── products.api.js
+│   ├── App.vue
+│   ├── assets
+│   │   ├── hero.png
+│   │   ├── vite.svg
+│   │   └── vue.svg
+│   ├── boot
+│   │   ├── auth.js
+│   │   └── axios.js
+│   ├── components
+│   │   ├── common
+│   │   │   ├── AppError.vue
+│   │   │   └── RetryButton.vue
+│   │   ├── HelloWorld.vue
+│   │   └── products
+│   │       └── ProductCard.vue
+│   ├── composables
+│   │   └── useApi.js
+│   ├── layouts
+│   │   └── MainLayout.vue
+│   ├── main.js
+│   ├── pages
+│   │   ├── auth
+│   │   │   ├── LoginPage.vue
+│   │   │   └── RegisterPage.vue
+│   │   ├── ErrorNotFound.vue
+│   │   └── products
+│   │       ├── ProductDetailPage.vue
+│   │       └── ProductsListPage.vue
+│   ├── quasar-variables.sass
+│   ├── router
+│   │   ├── index.js
+│   │   └── routes.js
+│   ├── stores
+│   │   ├── auth.store.js
+│   │   ├── inventory.store.js
+│   │   └── products.store.js
+│   └── style.css
+├── vite.config.js
+└── .vscode
+    ├── extensions.json
+    └── settings.json
+
+18 directories, 42 files
