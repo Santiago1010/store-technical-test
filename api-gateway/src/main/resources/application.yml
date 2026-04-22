@@ -6,20 +6,21 @@ spring:
     name: api-gateway
 
   r2dbc:
-    url: r2dbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:gateway_db}
-    username: ${DB_USER:gateway_user}
-    password: ${DB_PASSWORD:gateway_pass}
+    url: r2dbc:postgresql://${GATEWAY_DB_HOST:localhost}:${GATEWAY_DB_PORT:5432}/${GATEWAY_DB_NAME:gateway_db}
+    username: ${GATEWAY_DB_USER:gateway_user}
+    password: ${GATEWAY_DB_PASSWORD:gateway_pass}
 
   flyway:
-    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:gateway_db}
-    user: ${DB_USER:gateway_user}
-    password: ${DB_PASSWORD:gateway_pass}
+    url: jdbc:postgresql://${GATEWAY_DB_HOST:localhost}:${GATEWAY_DB_PORT:5432}/${GATEWAY_DB_NAME:gateway_db}
+    user: ${GATEWAY_DB_USER:gateway_user}
+    password: ${GATEWAY_DB_PASSWORD:gateway_pass}
     locations: classpath:db/migration
 
   cloud:
     gateway:
       default-filters:
         - AddResponseHeader=X-Gateway, api-gateway
+
       routes:
         - id: products-service
           uri: ${PRODUCTS_SERVICE_URL}
@@ -41,6 +42,21 @@ spring:
             - Path=/api/v1/inventory/**
           filters:
             - StripPrefix=0
+
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "http://localhost:5173"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - PATCH
+              - OPTIONS
+            allowedHeaders: "*"
+            allowCredentials: true
 
 jwt:
   secret: ${JWT_SECRET}
