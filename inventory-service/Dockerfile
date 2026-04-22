@@ -1,14 +1,12 @@
-FROM gradle:8.5-jdk17 AS build
+FROM eclipse-temurin:17-jdk-alpine AS builder
 WORKDIR /app
+COPY gradle/ gradle/
+COPY gradlew build.gradle.kts settings.gradle.kts ./
+RUN ./gradlew dependencies --no-daemon || true
+COPY src/ src/
+RUN ./gradlew bootJar --no-daemon
 
-COPY . .
-
-RUN chmod +x gradlew
-RUN ./gradlew build
-
-FROM eclipse-temurin:17-jdk
+FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
-
-COPY --from=build /app/build/libs/*.jar app.jar
-
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+COPY --from=builder /app/build/libs/*.jar app.jar
+ENTRYPOINT ["java", "-jar", "app.jar"]
