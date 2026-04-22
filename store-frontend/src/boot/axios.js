@@ -1,6 +1,7 @@
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 import { useAuthStore } from "src/stores/auth.store";
+import { useRouter } from "vue-router";
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
@@ -8,10 +9,10 @@ const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-  const authStore = useAuthStore();
+  const auth = useAuthStore();
 
-  if (authStore.token) {
-    config.headers.Authorization = `Bearer ${authStore.token}`;
+  if (auth.token) {
+    config.headers.Authorization = `Bearer ${auth.token}`;
   }
 
   config.headers["X-Correlation-Id"] = uuidv4();
@@ -20,12 +21,16 @@ api.interceptors.request.use((config) => {
 });
 
 api.interceptors.response.use(
-  (response) => {
-    return response;
-  },
+  (res) => res,
   (error) => {
-    const normalizedError = normalizeError(error);
-    return Promise.reject(normalizedError);
+    const auth = useAuthStore();
+
+    if (error.response?.status === 401) {
+      auth.logout();
+      window.location.href = "/auth/login";
+    }
+
+    return Promise.reject(normalizeError(error));
   },
 );
 
@@ -39,7 +44,6 @@ function normalizeError(error) {
   }
 
   const { status, data, headers } = error.response;
-
   const apiError = data?.errors?.[0];
 
   return {

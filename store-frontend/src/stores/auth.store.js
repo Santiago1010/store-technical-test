@@ -3,8 +3,10 @@ import { authApi } from "src/api/client";
 
 export const useAuthStore = defineStore("auth", {
   state: () => ({
-    token: localStorage.getItem("token") || null,
+    token: localStorage.getItem("token"),
     user: JSON.parse(localStorage.getItem("user") || "null"),
+    loading: false,
+    error: null,
   }),
 
   getters: {
@@ -12,34 +14,27 @@ export const useAuthStore = defineStore("auth", {
   },
 
   actions: {
-    async login(credentials) {
-      const response = await authApi.login(credentials);
+    async login(payload) {
+      this.loading = true;
+      this.error = null;
 
-      const token = response.access_token;
+      try {
+        const res = await authApi.login(payload);
 
-      this.token = token;
-      this.user = {
-        username: response.username,
-        role: response.role,
-      };
+        this.token = res.access_token;
+        this.user = {
+          username: res.username,
+          role: res.role,
+        };
 
-      localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(this.user));
-    },
-
-    async register(payload) {
-      const response = await authApi.register(payload);
-
-      const token = response.access_token;
-
-      this.token = token;
-      this.user = {
-        username: response.username,
-        role: response.role,
-      };
-
-      localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(this.user));
+        localStorage.setItem("token", this.token);
+        localStorage.setItem("user", JSON.stringify(this.user));
+      } catch (err) {
+        this.error = err.detail;
+        throw err;
+      } finally {
+        this.loading = false;
+      }
     },
 
     logout() {

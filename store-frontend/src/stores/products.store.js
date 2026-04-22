@@ -1,57 +1,41 @@
 import { defineStore } from "pinia";
 import { productsApi } from "src/api/client";
 
-const CACHE_TTL = 60 * 1000; // 60s
+const CACHE_TTL = 60 * 1000;
 
 export const useProductsStore = defineStore("products", {
   state: () => ({
-    items: [],
+    cache: {},
     loading: false,
     error: null,
-    lastFetch: null,
   }),
 
-  getters: {
-    isCacheValid(state) {
-      if (!state.lastFetch) return false;
-      return Date.now() - state.lastFetch < CACHE_TTL;
-    },
-  },
-
   actions: {
-    async fetchProducts({ force = false } = {}) {
-      if (!force && this.isCacheValid) {
-        return this.items;
+    async fetchProducts(query) {
+      const key = JSON.stringify(query);
+
+      const cached = this.cache[key];
+
+      if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+        return cached.data;
       }
 
       this.loading = true;
       this.error = null;
 
       try {
-        const response = await productsApi.list();
+        const res = await productsApi.list(query);
 
-        this.items = response?.data || response;
+        const data = res?.data || res;
 
-        this.lastFetch = Date.now();
+        this.cache[key] = {
+          data,
+          timestamp: Date.now(),
+        };
 
-        return this.items;
+        return data;
       } catch (err) {
-        this.error = mapError(err);
-        throw err;
-      } finally {
-        this.loading = false;
-      }
-    },
-
-    async getProduct(id) {
-      this.loading = true;
-      this.error = null;
-
-      try {
-        const response = await productsApi.getById(id);
-        return response?.data || response;
-      } catch (err) {
-        this.error = mapError(err);
+        this.error = err.detail;
         throw err;
       } finally {
         this.loading = false;
@@ -59,18 +43,3 @@ export const useProductsStore = defineStore("products", {
     },
   },
 });
-
-function mapError(err) {
-  switch (err.status) {
-    case 404:
-      return "Product not found";
-    case 409:
-      return "Conflict";
-    case 422:
-      return "Validation error";
-    case 503:
-      return "Service unavailable";
-    default:
-      return err.detail || "Unexpected error";
-  }
-}

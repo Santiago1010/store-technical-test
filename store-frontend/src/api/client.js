@@ -7,10 +7,11 @@ export async function request(config) {
 }
 
 export const productsApi = {
-  list() {
+  list(params = {}) {
     return request({
       method: "GET",
       url: "/api/v1/products",
+      params,
     });
   },
 
