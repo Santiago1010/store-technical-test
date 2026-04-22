@@ -8,7 +8,10 @@ vi.mock('@/api/client', () => ({
 }))
 
 describe('products.store', () => {
-  beforeEach(() => setActivePinia(createPinia()))
+  beforeEach(() => {
+    setActivePinia(createPinia())
+    vi.clearAllMocks()
+  })
 
   it('fetchProducts — cache miss calls API', async () => {
     productsApi.list.mockResolvedValue({ data: [{ id: '1' }] })
