@@ -6,16 +6,18 @@
     >
       <!-- LEFT -->
       <div class="column">
-        <div class="text-h6">{{ product.name }}</div>
-        <div class="text-caption text-grey">SKU: {{ product.sku }}</div>
+        <div class="text-h6">{{ product.attributes.name }}</div>
+        <div class="text-caption text-grey">
+          SKU: {{ product.attributes.sku }}
+        </div>
       </div>
       <!-- RIGHT -->
       <div class="column items-end">
         <q-badge :color="product.status === 'ACTIVE' ? 'positive' : 'grey'">
-          {{ product.status }}
+          {{ product.attributes.status }}
         </q-badge>
         <div class="text-subtitle1 q-mt-sm">
-          {{ formatPrice(product.price) }}
+          {{ formatPrice(product.attributes.price) }}
         </div>
       </div>
     </q-card-section>

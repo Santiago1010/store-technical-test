@@ -6,7 +6,7 @@
 
     <AppError v-else-if="error" :message="error" :retry="load" />
 
-    <div v-else>
+    <div v-else-if="product">
       <div class="text-h5">{{ product.name }}</div>
       <div class="text-subtitle1">Price: {{ product.price }}</div>
 
@@ -51,17 +51,22 @@ async function load() {
   error.value = null;
 
   try {
-    const [p, i] = await Promise.all([
-      productsApi.getById(route.params.id),
-      inventoryApi.getByProductId(route.params.id),
-    ]);
-
-    product.value = p.data || p;
-    inventory.value = i.data || i;
+    const p = await productsApi.getById(route.params.id);
+    const raw = p?.data || p;
+    product.value = { id: raw.id, ...raw.attributes };
   } catch (err) {
     error.value = err.detail;
+    return;
   } finally {
     loading.value = false;
+  }
+
+  try {
+    const i = await inventoryApi.getByProductId(route.params.id);
+    const rawI = i?.data || i;
+    inventory.value = rawI?.attributes || rawI;
+  } catch {
+    //
   }
 }
 

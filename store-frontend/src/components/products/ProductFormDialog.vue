@@ -97,12 +97,21 @@ const saving = ref(false);
 // Populate on edit
 watch(
   () => props.product,
-  (p) => {
-    if (p) Object.assign(form, { ...defaultForm(), ...p });
-    else Object.assign(form, defaultForm());
+  async (p) => {
+    Object.assign(form, defaultForm());
     Object.keys(errors).forEach((k) => delete errors[k]);
+
+    if (p?.id) {
+      saving.value = true;
+      try {
+        const res = await productsApi.getById(p.id);
+        const raw = res?.data || res;
+        Object.assign(form, { id: raw.id, ...raw.attributes });
+      } finally {
+        saving.value = false;
+      }
+    }
   },
-  { immediate: true },
 );
 
 function validate() {
