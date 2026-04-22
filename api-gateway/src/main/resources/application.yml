@@ -33,7 +33,7 @@ spring:
         - id: inventory-purchases
           uri: ${INVENTORY_SERVICE_URL}
           predicates:
-            - Path=/api/v1/purchases/**
+            - Path=/api/v1/purchases,/api/v1/purchases/**
           filters:
             - StripPrefix=0
             - AddRequestHeader=X-API-Key, ${API_KEY_SECRET}

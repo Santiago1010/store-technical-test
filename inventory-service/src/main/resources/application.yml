@@ -67,3 +67,5 @@ api:
 logging:
   level:
     root: INFO
+    com.store.inventory: DEBUG
+    org.springframework.web: DEBUG

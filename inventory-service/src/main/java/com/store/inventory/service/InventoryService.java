@@ -18,6 +18,7 @@ import org.slf4j.MDC;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.store.inventory.dto.CreateInventoryRequest;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -125,5 +126,13 @@ public class InventoryService {
                 ))
                 .build())
             .build();
+    }
+
+    public JsonApiResponse createInventory(CreateInventoryRequest request) {
+        Inventory inventory = Inventory.builder()
+            .productId(request.getProductId())
+            .available(request.getAvailable())
+            .build();
+        return toJsonApiResponse(inventoryRepository.save(inventory));
     }
 }
